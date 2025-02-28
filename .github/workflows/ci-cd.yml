@@ -1,0 +1,38 @@
+name: Deploy code to GCP
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: 'Checkout code'
+      uses: 'actions/checkout@v2'
+
+    - name: 'Authenticate with GCP'
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: 'iut2024'
+        credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY}}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        version: '>= 363.0.0'
+
+    - name: 'Setup/Push docker'
+      run: gcloud builds submit --tag gcr.io/iut2024/flask-app
+    - name: 'Deploy Docker'
+      run: gcloud run deploy flask-app --image gcr.io/pedro-666/flask-app --platform managed --region europe-west10 --allow-unauthenticated
