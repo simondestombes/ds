@@ -35,4 +35,4 @@ jobs:
     - name: 'Setup/Push docker'
       run: gcloud builds submit --tag gcr.io/iut2024/flask-app
     - name: 'Deploy Docker'
-      run: gcloud run deploy flask-app --image gcr.io/iut2024/flask-app --platform managed --region europe-west10 --allow-unauthenticated
+      run: gcloud run deploy flask-app --image gcr.io/iut2024/flask-app --platform managed --region europe-west9 --allow-unauthenticated
